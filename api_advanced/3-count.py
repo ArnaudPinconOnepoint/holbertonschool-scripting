@@ -25,6 +25,8 @@ def count_words(subreddit, word_list, word_count=None, after=None):
             data = r.json()
             hot_topic = data.get('data', {}).get('children', [])
             after = data.get('data', {}).get('after', None)
+
+            # Count occurrences of words in titles
             for post in hot_topic:
                 title = post.get('data', {}).get('title', '').lower()
                 for word in word_list:
@@ -32,7 +34,7 @@ def count_words(subreddit, word_list, word_count=None, after=None):
                     word_count[word_lower] += title.split().count(word_lower)
 
             if after is not None:
-                count_words(subreddit, word_list, word_count, after)
+                count_words(subreddit, word_list, word_count, after)  # Recursive call with updated 'after'
             else:
                 # Sort words by count (descending), then alphabetically (ascending)
                 sorted_words = sorted(word_count.items(), key=lambda x: (-x[1], x[0]))
@@ -44,11 +46,7 @@ def count_words(subreddit, word_list, word_count=None, after=None):
         print(None)
         return error    
 
-
-
-
 if __name__ == "__main__":
-    subreddit = 'LittleBigAdventure'
-    result = count_words(subreddit, word_list=['zoe', 'Twinsen', 'sendell', 'grobo'])
-    print(result)
-    
+    subreddit = 'LittleBigAdventure'  # Example subreddit
+    word_list = ['zoe', 'Twinsen', 'sendell', 'grobo']  # Example word list
+    result = count_words(subreddit, word_list)
